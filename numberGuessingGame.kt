@@ -2,24 +2,10 @@ package com.example.numberguessinggame
 
 fun main() {
     val number = generateNumber()
-    print("Enter a 4-digit number: ")
-    var input = readLine().toString()
-    var inputCorrect = validateInput(input)
-    var numberFound = false
+    var numberGuessed = userInput(number)
 
-    if(inputCorrect) {
-        numberFound = checkResult(number, input)
-        displayOutput(number, input)
-    }
-
-    while (!numberFound) {
-        print("Enter a 4-digit number: ")
-        input = readLine().toString()
-        inputCorrect = validateInput(input)
-        if(inputCorrect){
-            numberFound = checkResult(number, input)
-            displayOutput(number, input)
-        }
+    while (!numberGuessed) {
+        numberGuessed = userInput(number)
     }
     println("Congratulations! You have found the number!")
 }
@@ -32,6 +18,18 @@ fun generateNumber(): String {
         number += digits[i]
     }
     return number
+}
+
+fun userInput(number: String): Boolean {
+    print("Enter a 4-digit number: ")
+    val input = readLine().toString()
+    val inputValid = validateInput(input)
+    if(inputValid){
+        val numberFound = checkResult(number, input)
+        displayOutput(number, input)
+        return numberFound
+    }
+    return false
 }
 
 fun getNrCorrectDigits(number: String,  input: String): Int {
@@ -60,23 +58,24 @@ fun getNrCorrectDigitsAtPosition(number: String,  input: String): Int {
 
 fun validateInput(input: String): Boolean {
     try{
-        if(Integer.parseInt(input) in 1000 .. 9999) {
-
+        //if(Integer.parseInt(input) in 1000 .. 9999) { // does not work since e.g. "0192" is not in the range
+        if(input.length == 4 && Integer.parseInt(input) < 9999) {
             return true
         }
-        throw StringIndexOutOfBoundsException("Not a 4 digit number!")
+        else {
+            throw StringIndexOutOfBoundsException("Not a 4 digit number!")
+        }
     }
     catch(e: NumberFormatException) {
         println("Invalid input! Not a number!")
-        return false
     }
     catch(e: StringIndexOutOfBoundsException){
         println("Invalid input! Please enter a 4 digit number.")
-        return false
     }
+    return false
 }
 
-fun displayOutput(number: String,  input: String) {
+fun displayOutput(number: String, input: String) {
     println("${getNrCorrectDigits(number, input)}:${getNrCorrectDigitsAtPosition(number, input)}")
 }
 
