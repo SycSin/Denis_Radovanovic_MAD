@@ -1,4 +1,4 @@
-package com.example.movie.screens
+package com.example.movie.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -16,19 +16,23 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.movie.models.Movie
-import com.example.movie.models.getMovies
+import com.example.movie.data.Movie
+import com.example.movie.ui.MovieViewModel
 
 @Composable
-fun DetailScreen(movieId: String?, navController: NavHostController) {
+fun DetailScreen(
+        movieId: String?,
+        movieViewModel: MovieViewModel,
+        navController: NavHostController,
+    ) {
     movieId?.let {
-        val movie = getMovies().find { element ->
+        val movie = movieViewModel.movies.find { element ->
             element.id == movieId
         }
         movie?.let {
             Column {
                 SimpleAppBar(movie.title, navController)
-                MovieRow(movie)
+                MovieRow(movie, movieViewModel)
                 Spacer(modifier = Modifier.size(5.dp))
                 Divider(startIndent = 5.dp, thickness = 0.5.dp, color = Color.DarkGray)
                 Text(modifier = Modifier

@@ -1,4 +1,4 @@
-package com.example.movie.screens
+package com.example.movie.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,18 +13,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.movie.models.Movie
-import com.example.movie.models.getMovies
+import com.example.movie.data.Movie
+import com.example.movie.ui.MovieViewModel
 
 val defaultMovie = Movie(id = "tt0499549", title = "Avatar", year = "2009", genre = "Action, Adventure, Fantasy", director = "James Cameron", actors = "Sam Worthington, Zoe Saldana, Sigourney Weaver, Stephen Lang", plot = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.", images = listOf("https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BNzM2MDk3MTcyMV5BMl5BanBnXkFtZTcwNjg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BMTY2ODQ3NjMyMl5BMl5BanBnXkFtZTcwODg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BMTMxOTEwNDcxN15BMl5BanBnXkFtZTcwOTg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"), rating = "7.9")
 
 @Composable
-fun HomeScreen(navController: NavHostController = rememberNavController()) {
+fun HomeScreen(
+    movieViewModel: MovieViewModel = viewModel(),
+    navController: NavHostController = rememberNavController(),
+    ) {
     Column{
         HomeScreenAppBar("Movies", navController)
-        MovieList(getMovies(), navController)
+        MovieList(movieViewModel, navController)
     }
 }
 
@@ -68,10 +72,13 @@ fun HomeScreenAppBar(title: String = "Movies", navController: NavHostController)
 }
 
 @Composable
-fun MovieList(movies: List<Movie> = listOf(defaultMovie), navController: NavHostController) {
+fun MovieList(
+        movieViewModel: MovieViewModel,
+        navController: NavHostController,
+    ) {
     LazyColumn {
-        items(movies) { movie ->
-            MovieRow(movie){
+        items(movieViewModel.movies) { movie ->
+            MovieRow(movie, movieViewModel){
                 navController.navigate("${Screen.Details.route}/${movie.id}")
             }
         }

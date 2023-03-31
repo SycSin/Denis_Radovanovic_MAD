@@ -1,4 +1,4 @@
-package com.example.movie.models
+package com.example.movie.data
 
 data class Movie(
     val id: String,
@@ -9,7 +9,9 @@ data class Movie(
     val actors: String,
     val plot: String,
     val images: List<String>,
-    val rating: String)
+    val rating: String,
+    var isFavorite: Boolean = false,
+)
 
 fun getMovies(): List<Movie> {
     return listOf(

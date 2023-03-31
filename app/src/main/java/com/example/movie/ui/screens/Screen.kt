@@ -1,4 +1,4 @@
-package com.example.movie.screens
+package com.example.movie.ui.screens
 
 sealed class Screen(val route: String) {
     object Home: Screen(route = "home_screen")

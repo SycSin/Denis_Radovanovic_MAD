@@ -1,4 +1,4 @@
-package com.example.movie.screens
+package com.example.movie.ui.screens
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
@@ -24,7 +24,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.movie.models.Movie
+import com.example.movie.data.Movie
+import com.example.movie.ui.MovieViewModel
 
 @Composable
 fun SimpleAppBar(title: String = "Movies", navController: NavHostController) {
@@ -51,9 +52,13 @@ fun SimpleAppBar(title: String = "Movies", navController: NavHostController) {
 }
 
 @Composable
-fun MovieRow(movie: Movie = defaultMovie, onItemClick: (String) -> Unit = {}) {
+fun MovieRow(
+        movie: Movie = defaultMovie,
+        movieViewModel: MovieViewModel,
+        onItemClick: (String) -> Unit = {},
+    ) {
     var favoriteState by remember {
-        mutableStateOf(false)
+        mutableStateOf(movie.isFavorite)
     }
     var expandedState by remember {
         mutableStateOf(false)
@@ -105,6 +110,8 @@ fun MovieRow(movie: Movie = defaultMovie, onItemClick: (String) -> Unit = {}) {
                         contentDescription = "Add to favorites",
                         modifier = Modifier.clickable(onClick = {
                             favoriteState = !favoriteState
+                            movie.isFavorite = favoriteState
+                            movieViewModel.updateFavorites(movie, favoriteState)
                         })
                     )
                 }
