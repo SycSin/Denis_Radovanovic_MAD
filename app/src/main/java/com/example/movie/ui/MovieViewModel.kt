@@ -16,17 +16,19 @@ class MovieViewModel : ViewModel() {
         get() = _favoritesList
 
 
-    fun updateFavorites(movie: Movie, isFavorite: Boolean) {
+    fun updateFavorites(movie: Movie) {
         movies.find { item ->
             item.id == movie.id
-        }?.let { item ->
-            item.isFavorite == isFavorite
-        }
-        if(isFavorite) {
-            _favoritesList.add(movie)
-        }
-        else {
-            _favoritesList.remove(movie)
+        }?.let {
+            val favoriteState: Boolean = movie.isFavorite
+            movie.isFavorite = !favoriteState
+
+            if(!favoriteState) {
+                _favoritesList.add(movie)
+            }
+            else{
+                _favoritesList.remove(movie)
+            }
         }
     }
 

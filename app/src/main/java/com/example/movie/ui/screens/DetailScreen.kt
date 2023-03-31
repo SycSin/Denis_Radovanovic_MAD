@@ -32,7 +32,7 @@ fun DetailScreen(
         movie?.let {
             Column {
                 SimpleAppBar(movie.title, navController)
-                MovieRow(movie, movieViewModel)
+                MovieRow(movie, onFavoriteClick = { movieViewModel.updateFavorites(movie) })
                 Spacer(modifier = Modifier.size(5.dp))
                 Divider(startIndent = 5.dp, thickness = 0.5.dp, color = Color.DarkGray)
                 Text(modifier = Modifier

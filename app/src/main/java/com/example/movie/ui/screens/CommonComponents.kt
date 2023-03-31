@@ -25,7 +25,6 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.movie.data.Movie
-import com.example.movie.ui.MovieViewModel
 
 @Composable
 fun SimpleAppBar(title: String = "Movies", navController: NavHostController) {
@@ -54,7 +53,7 @@ fun SimpleAppBar(title: String = "Movies", navController: NavHostController) {
 @Composable
 fun MovieRow(
         movie: Movie = defaultMovie,
-        movieViewModel: MovieViewModel,
+        onFavoriteClick: (Movie) -> Unit = {},
         onItemClick: (String) -> Unit = {},
     ) {
     var favoriteState by remember {
@@ -108,11 +107,11 @@ fun MovieRow(
                         tint = Color.Red,
                         imageVector = if(favoriteState) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Add to favorites",
-                        modifier = Modifier.clickable(onClick = {
-                            favoriteState = !favoriteState
-                            movie.isFavorite = favoriteState
-                            movieViewModel.updateFavorites(movie, favoriteState)
-                        })
+                        modifier = Modifier
+                            .clickable {
+                                favoriteState = !favoriteState
+                                onFavoriteClick(movie)
+                            }
                     )
                 }
             }

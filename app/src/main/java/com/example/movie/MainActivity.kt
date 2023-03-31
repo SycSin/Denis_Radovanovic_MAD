@@ -25,8 +25,8 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     color = MaterialTheme.colors.background
                 ) {
-                    navController = rememberNavController()
                     movieViewModel = viewModel()
+                    navController = rememberNavController()
                     Column {
                         SetupNavGraph(movieViewModel, navController)
                     }

@@ -27,7 +27,7 @@ fun FavoriteScreen(
         Divider(startIndent = 5.dp, thickness = 0.5.dp, color = Color.DarkGray)
 
         for(movie: Movie in movieViewModel.favoritesList) {
-            MovieRow(movie, movieViewModel) {
+            MovieRow(movie, onFavoriteClick = { movieViewModel.updateFavorites(movie) }) {
                 navController.navigate("${Screen.Details.route}/${movie.id}")
             }
         }

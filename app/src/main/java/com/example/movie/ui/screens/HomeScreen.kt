@@ -78,7 +78,7 @@ fun MovieList(
     ) {
     LazyColumn {
         items(movieViewModel.movies) { movie ->
-            MovieRow(movie, movieViewModel){
+            MovieRow(movie, onFavoriteClick = { movieViewModel.updateFavorites(movie) }){
                 navController.navigate("${Screen.Details.route}/${movie.id}")
             }
         }
