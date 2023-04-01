@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
@@ -34,6 +35,9 @@ fun HomeScreen(
 
 @Composable
 fun HomeScreenAppBar(title: String = "Movies", navController: NavHostController) {
+    var addButtonClickedState by remember {
+        mutableStateOf(false)
+    }
     var optionsState by remember {
         mutableStateOf(false)
     }
@@ -45,25 +49,32 @@ fun HomeScreenAppBar(title: String = "Movies", navController: NavHostController)
         horizontalArrangement = Arrangement.SpaceBetween,
     ){
         Text(title, style = MaterialTheme.typography.h6, color = Color.White)
-        Column {
-            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Settings", tint = Color.White,
-                modifier = Modifier.clickable(onClick = {
-                    optionsState = !optionsState
-                }),
-            )
-            DropdownMenu(
-                expanded = optionsState,
-                onDismissRequest = {
-                    optionsState = false
-                },
-            ) {
-                menuItems.forEach { item ->
-                    DropdownMenuItem(onClick = {
-                        navController.navigate(Screen.Favorites.route)
-                    }) {
-                        Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorites")
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(item)
+        Row {
+            Icon(imageVector =  Icons.Default.Add, contentDescription = "Add Movie", tint = Color.White,
+            modifier = Modifier.clickable(onClick = {
+                addButtonClickedState = !addButtonClickedState
+                navController.navigate(Screen.AddMovie.route)
+            }))
+            Column {
+                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Settings", tint = Color.White,
+                    modifier = Modifier.clickable(onClick = {
+                        optionsState = !optionsState
+                    }),
+                )
+                DropdownMenu(
+                    expanded = optionsState,
+                    onDismissRequest = {
+                        optionsState = false
+                    },
+                ) {
+                    menuItems.forEach { item ->
+                        DropdownMenuItem(onClick = {
+                            navController.navigate(Screen.Favorites.route)
+                        }) {
+                            Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorites")
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(item)
+                        }
                     }
                 }
             }

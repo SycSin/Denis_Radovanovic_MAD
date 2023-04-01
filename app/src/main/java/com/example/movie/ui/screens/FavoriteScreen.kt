@@ -17,7 +17,7 @@ fun FavoriteScreen(
         navController: NavHostController,
     ) {
     Column {
-        SimpleAppBar(navController = navController)
+        SimpleAppBar(title = "My favorite Movies", navController = navController)
         Text(modifier = Modifier
             .align(Alignment.CenterHorizontally),
             fontSize = MaterialTheme.typography.h4.fontSize,
