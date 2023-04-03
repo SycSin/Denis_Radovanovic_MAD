@@ -3,18 +3,47 @@ package com.example.movie.ui
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
+import com.example.movie.data.Genre
 import com.example.movie.data.Movie
 import com.example.movie.data.getMovies
 
 class MovieViewModel : ViewModel() {
+
+    data class ListItemSelectable(
+        val title: Genre,
+        val isSelected: Boolean
+    )
+
     private val _movies = getMovies().toMutableStateList()
-    val movies: List<Movie>
+    val movies: MutableList<Movie>
         get() = _movies
 
     private val _favoritesList: MutableList<Movie> = mutableStateListOf()
     val favoritesList: List<Movie>
         get() = _favoritesList
 
+    fun isValidMovie(title: String, year: String, genres: List<Genre>, director: String, actors: String, rating: Float): Boolean {
+        return (title.isNotBlank() && year.isNotBlank() && genres.isNotEmpty() && director.isNotBlank() && actors.isNotBlank() && rating > 0.0f)
+    }
+
+    fun addNewMovie(title: String, year: String, genres: List<Genre>, director: String, actors: String, plot: String, images: List<String>, rating: Float) {
+        if(isValidMovie(title, year, genres, director, actors, rating)) {
+            val lastId = movies.last().id.substring(2).toIntOrNull() ?: 0 //skip 'tt' in the beginning
+            movies.add(
+                Movie(
+                    id = "tt${lastId + 1}",
+                    title = title,
+                    year = year,
+                    genre = genres.toString(),
+                    director = director,
+                    actors = actors,
+                    plot = plot,
+                    images = images,
+                    rating = rating
+                )
+            )
+        }
+    }
 
     fun updateFavorites(movie: Movie) {
         movies.find { item ->
@@ -31,6 +60,7 @@ class MovieViewModel : ViewModel() {
             }
         }
     }
+
 
     private fun resetFavoritesList() {
         _favoritesList.clear()

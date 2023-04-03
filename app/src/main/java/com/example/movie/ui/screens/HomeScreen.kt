@@ -20,7 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movie.data.Movie
 import com.example.movie.ui.MovieViewModel
 
-val defaultMovie = Movie(id = "tt0499549", title = "Avatar", year = "2009", genre = "Action, Adventure, Fantasy", director = "James Cameron", actors = "Sam Worthington, Zoe Saldana, Sigourney Weaver, Stephen Lang", plot = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.", images = listOf("https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BNzM2MDk3MTcyMV5BMl5BanBnXkFtZTcwNjg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BMTY2ODQ3NjMyMl5BMl5BanBnXkFtZTcwODg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BMTMxOTEwNDcxN15BMl5BanBnXkFtZTcwOTg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"), rating = "7.9")
+val defaultMovie = Movie(id = "tt0499549", title = "Avatar", year = "2009", genre = "Action, Adventure, Fantasy", director = "James Cameron", actors = "Sam Worthington, Zoe Saldana, Sigourney Weaver, Stephen Lang", plot = "A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.", images = listOf("https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BNzM2MDk3MTcyMV5BMl5BanBnXkFtZTcwNjg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BMTY2ODQ3NjMyMl5BMl5BanBnXkFtZTcwODg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BMTMxOTEwNDcxN15BMl5BanBnXkFtZTcwOTg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg", "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"), rating = 7.9f)
 
 @Composable
 fun HomeScreen(
@@ -41,7 +41,6 @@ fun HomeScreenAppBar(title: String = "Movies", navController: NavHostController)
     var optionsState by remember {
         mutableStateOf(false)
     }
-    val menuItems = listOf("Favorites")
     Row(modifier = Modifier
         .background(Color.Blue)
         .fillMaxWidth()
@@ -49,33 +48,31 @@ fun HomeScreenAppBar(title: String = "Movies", navController: NavHostController)
         horizontalArrangement = Arrangement.SpaceBetween,
     ){
         Text(title, style = MaterialTheme.typography.h6, color = Color.White)
-        Row {
-            Icon(imageVector =  Icons.Default.Add, contentDescription = "Add Movie", tint = Color.White,
-            modifier = Modifier.clickable(onClick = {
-                addButtonClickedState = !addButtonClickedState
-                navController.navigate(Screen.AddMovie.route)
-            }))
-            Column {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Settings", tint = Color.White,
-                    modifier = Modifier.clickable(onClick = {
-                        optionsState = !optionsState
-                    }),
-                )
-                DropdownMenu(
-                    expanded = optionsState,
-                    onDismissRequest = {
-                        optionsState = false
-                    },
-                ) {
-                    menuItems.forEach { item ->
-                        DropdownMenuItem(onClick = {
-                            navController.navigate(Screen.Favorites.route)
-                        }) {
-                            Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorites")
-                            Spacer(modifier = Modifier.width(5.dp))
-                            Text(item)
-                        }
-                    }
+        Column {
+            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Settings", tint = Color.White,
+                modifier = Modifier.clickable(onClick = {
+                    optionsState = !optionsState
+                }),
+            )
+            DropdownMenu(
+                expanded = optionsState,
+                onDismissRequest = {
+                    optionsState = false
+                },
+            ) {
+                DropdownMenuItem(onClick = {
+                    navController.navigate(Screen.AddMovie.route)
+                }) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Movie")
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text("Add Movie")
+                }
+                DropdownMenuItem(onClick = {
+                    navController.navigate(Screen.Favorites.route)
+                }) {
+                    Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorites")
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text("Favorites")
                 }
             }
         }

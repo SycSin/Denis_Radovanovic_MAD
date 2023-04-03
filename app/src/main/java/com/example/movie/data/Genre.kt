@@ -2,13 +2,14 @@ package com.example.movie.data
 
 enum class Genre {
     ACTION,
-    COMEDY,
-    DRAMA,
-    THRILLER,
-    ADVENTURE,
-    CRIME,
-    HISTORY,
+    ADVENTRUE,
     BIOGRAPHY,
+    COMEDY,
+    CRIME,
     FANTASY,
+    DRAMA,
+    HISTORY,
     SCIFI,
+    THRILLER,;
+    val isSelected: Boolean = false
 }
