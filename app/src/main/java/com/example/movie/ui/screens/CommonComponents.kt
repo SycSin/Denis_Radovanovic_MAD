@@ -24,7 +24,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.movie.data.Movie
+import com.example.movie.models.Movie
 
 @Composable
 fun SimpleAppBar(title: String = "Movies", navController: NavHostController) {
@@ -52,12 +52,16 @@ fun SimpleAppBar(title: String = "Movies", navController: NavHostController) {
 
 @Composable
 fun MovieRow(
-        movie: Movie = defaultMovie,
-        onFavoriteClick: (Movie) -> Unit = {},
-        onItemClick: (String) -> Unit = {},
-    ) {
+    movie: Movie = defaultMovie,
+    onDeleteClick: (Movie) -> Unit = {},
+    onFavoriteClick: (Movie) -> Unit = {},
+    onItemClick: (String) -> Unit = {},
+) {
     var favoriteState by remember {
         mutableStateOf(movie.isFavorite)
+    }
+    var deleteState by remember {
+        mutableStateOf(false)
     }
     var expandedState by remember {
         mutableStateOf(false)
@@ -66,7 +70,7 @@ fun MovieRow(
         .fillMaxWidth()
         .padding(5.dp)
         .clickable {
-            onItemClick(movie.id)
+            onItemClick(movie.id.toString())
         }
         .animateContentSize(
             animationSpec = tween(
@@ -102,17 +106,28 @@ fun MovieRow(
                     .padding(10.dp),
                     contentAlignment = Alignment.TopEnd
                 ){
-                    Icon(
-                        //tint = MaterialTheme.colors.secondary,
-                        tint = Color.Red,
-                        imageVector = if(favoriteState) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Add to favorites",
-                        modifier = Modifier
-                            .clickable {
-                                favoriteState = !favoriteState
-                                onFavoriteClick(movie)
-                            }
-                    )
+                    Row {
+                        Icon(
+                            tint = Color.Red,
+                            imageVector = if(favoriteState) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Add to favorites",
+                            modifier = Modifier
+                                .clickable {
+                                    favoriteState = !favoriteState
+                                    onFavoriteClick(movie)
+                                }
+                        )
+                        Icon(
+                            tint = Color.Black,
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Movie",
+                            modifier = Modifier
+                                .clickable {
+                                    deleteState = !deleteState
+                                    onDeleteClick(movie)
+                                }
+                        )
+                    }
                 }
             }
             Row(modifier = Modifier

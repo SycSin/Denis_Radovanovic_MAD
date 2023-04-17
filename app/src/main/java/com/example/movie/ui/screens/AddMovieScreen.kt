@@ -16,16 +16,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.movie.R
-import com.example.movie.data.Genre
-import com.example.movie.ui.MovieViewModel
+import com.example.movie.models.Genre
+import com.example.movie.models.Movie
+import com.example.movie.ui.views.AddMovieViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddMovieScreen(
     modifier: Modifier = Modifier,
-    movieViewModel: MovieViewModel,
+    addMovieViewModel: AddMovieViewModel,
     navController: NavHostController,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     Column {
         SimpleAppBar(title = "Add a Movie", navController = navController)
         Surface(
@@ -61,7 +64,7 @@ fun AddMovieScreen(
                 var genreItems by remember {
                     mutableStateOf(
                         genres.map { genre ->
-                            MovieViewModel.ListItemSelectable(
+                            AddMovieViewModel.ListItemSelectable(
                                 title = genre,
                                 isSelected = false
                             )
@@ -244,12 +247,14 @@ fun AddMovieScreen(
                     )
                 }
 
-                isEnabledSaveButton = movieViewModel.isValidMovie(title, year, genreItems.filter { x -> x.isSelected }.map { x -> x.title }, director, actors, rating.toFloatOrNull() ?: 0.0f)
+                isEnabledSaveButton = addMovieViewModel.isValidMovie(title, year, genreItems.filter { x -> x.isSelected }.map { it.title }.toString(), director, actors, rating.toFloatOrNull() ?: 0.0f)
 
                 Button(
                     enabled = isEnabledSaveButton,
                     onClick = {
-                        movieViewModel.addNewMovie(title, year, genreItems.filter { x -> x.isSelected }.map { x -> x.title }, director, actors, plot, listOf("https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"), rating.toFloatOrNull() ?: 0.0f)
+                        coroutineScope.launch {
+                            addMovieViewModel.addMovie(Movie(title = title, year = year, genre = genreItems.filter { x -> x.isSelected }.map { it.title }.toString(), director = director, actors = actors, plot = plot, images = listOf("https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"), rating = rating.toFloatOrNull() ?: 0.0f))
+                        }
                         navController.navigate(Screen.Home.route)
                     }) {
                     Text(text = stringResource(R.string.add))

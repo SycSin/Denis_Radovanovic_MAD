@@ -16,32 +16,43 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.movie.data.Movie
-import com.example.movie.ui.MovieViewModel
+import com.example.movie.models.Movie
+import com.example.movie.ui.views.FavoritesViewModel
+import com.example.movie.ui.views.MovieViewModel
+import kotlinx.coroutines.launch
+
 
 @Composable
 fun DetailScreen(
-        movieId: String?,
-        movieViewModel: MovieViewModel,
-        navController: NavHostController,
-    ) {
-    movieId?.let {
-        val movie = movieViewModel.movies.find { element ->
-            element.id == movieId
-        }
-        movie?.let {
-            Column {
-                SimpleAppBar(movie.title, navController)
-                MovieRow(movie, onFavoriteClick = { movieViewModel.updateFavorites(movie) })
-                Spacer(modifier = Modifier.size(5.dp))
-                Divider(startIndent = 5.dp, thickness = 0.5.dp, color = Color.DarkGray)
-                Text(modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                    fontSize = MaterialTheme.typography.h4.fontSize,
-                    text = "Movie Images"
-                )
-                ImagesList(movie)
-            }
+    movie: Movie,
+    movieViewModel: MovieViewModel,
+    favoritesViewModel: FavoritesViewModel,
+    navController: NavHostController,
+) {
+    movie.let {
+        val coroutineScope = rememberCoroutineScope()
+        Column {
+            SimpleAppBar(movie.title, navController)
+            MovieRow(movie,
+                onFavoriteClick = {
+                    coroutineScope.launch {
+                        favoritesViewModel.updateFavorites(movie)
+                    }
+                },
+                onDeleteClick = {
+                    coroutineScope.launch {
+                        movieViewModel.deleteMovie(movie)
+                    }
+                }
+            )
+            Spacer(modifier = Modifier.size(5.dp))
+            Divider(startIndent = 5.dp, thickness = 0.5.dp, color = Color.DarkGray)
+            Text(modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+                fontSize = MaterialTheme.typography.h4.fontSize,
+                text = "Movie Images"
+            )
+            ImagesList(movie)
         }
     }
 }

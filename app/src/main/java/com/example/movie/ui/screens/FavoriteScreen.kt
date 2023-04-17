@@ -8,14 +8,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.movie.data.Movie
-import com.example.movie.ui.MovieViewModel
+import com.example.movie.models.Movie
+import com.example.movie.ui.views.FavoritesViewModel
+import com.example.movie.ui.views.MovieViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun FavoriteScreen(
-        movieViewModel: MovieViewModel,
-        navController: NavHostController,
-    ) {
+    movieViewModel: MovieViewModel,
+    favoritesViewModel: FavoritesViewModel,
+    navController: NavHostController,
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    val favoritesState by favoritesViewModel.getAllFavorites().collectAsState(initial = emptyList())
+
     Column {
         SimpleAppBar(title = "My favorite Movies", navController = navController)
         Text(modifier = Modifier
@@ -26,8 +33,19 @@ fun FavoriteScreen(
         Spacer(modifier = Modifier.size(5.dp))
         Divider(startIndent = 5.dp, thickness = 0.5.dp, color = Color.DarkGray)
 
-        for(movie: Movie in movieViewModel.favoritesList) {
-            MovieRow(movie, onFavoriteClick = { movieViewModel.updateFavorites(movie) }) {
+        for(movie: Movie in favoritesState) {
+            MovieRow(movie,
+                onFavoriteClick = {
+                    coroutineScope.launch {
+                        favoritesViewModel.updateFavorites(movie)
+                    }
+                },
+                onDeleteClick = {
+                    coroutineScope.launch {
+                        movieViewModel.deleteMovie(movie)
+                    }
+                }
+            ) {
                 navController.navigate("${Screen.Details.route}/${movie.id}")
             }
         }
